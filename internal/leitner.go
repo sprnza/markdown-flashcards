@@ -199,7 +199,7 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32, marked bool) {
 	back := WrapLines(c.Back, s.WrapLines)
 	fmt.Printf("\n%s\n", back)
 
-	fmt.Println("--> Press (m) to mark card with 'fixme' tag.")
+	fmt.Println("--> Enter (m) to mark card with 'fixme' tag.")
 	fmt.Println("--> How difficult was it to remember?")
 	fmt.Printf("--> (1) Not remembered, (2) Hard, (3) Okay, (4) Easy: ")
 	d, marked := ReadNumberInput(1, 4)
