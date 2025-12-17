@@ -2,12 +2,12 @@
  
 some text that won't be parsed
  
-## Why do broadcast algorithms differentiate between receiving and delivering? Some more text here to test the width setting and line wraps.
+## Why do broadcast algorithms differentiate between receiving and delivering? Some more text here to test the width setting and line wraps. <!--H07U;0;2025-12-17-->
 Because between the network and the application there lies the broadcast algorithm as a middleware. The algorithm decides, whether a message which the node received is forwarded (i.e. delivered) to the application.
 
 The same applies to the send. An application only sees the broadcast call but the middleware then spreads it into multiple point-to-point messages.
 
-## Which types of reliable broadcast are there?
+## Which types of reliable broadcast are there? <!--Ren2;1;2025-12-18-->
 
 - FIFO broadcast
 - Causal broadcast
@@ -18,7 +18,7 @@ The same applies to the send. An application only sees the broadcast call but th
 
 A1
 
-## Q2  <!-- YKuO;0;2023-02-24-->
+## Q2 <!--oCH3;0;2025-12-17-->
 
 A2
 ##   Q3   <!--0YK7;2;2023-02-26  -->
@@ -27,7 +27,7 @@ A3
 # T2
 some other text
 
-## Q4 <!--fjJd;0;2023-02-24-->
+## Q4 <!--fjJd;0;2025-12-17-->
 
 A4
 

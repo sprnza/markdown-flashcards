@@ -43,21 +43,27 @@ func PrintJSON[T any](v T) {
 	fmt.Println(string(out))
 }
 
-// ReadNumberInput reads a number from standard input. The number must be within i and j. If it is not, it will retry.
-func ReadNumberInput(i, j int) int {
-	res := i - 1
+// ReadNumberInput reads a number or "m" symbol from standard input.
+// The number must be within i and j. If it is not, it will retry.
+func ReadNumberInput(i, j int) (int, bool) {
+	marked := false
 	scanner := bufio.NewScanner(os.Stdin)
-	for res < i || res > j {
+
+	for {
 		scanner.Scan()
 		in := scanner.Text()
+		if in == "m" {
+			marked = true
+			fmt.Print("Card marked for edit. Please enter a number: ")
+			continue
+		}
 		nr, err := strconv.Atoi(in)
 		if err != nil || nr < i || nr > j {
 			fmt.Print("Please enter a number: ")
 			continue
 		}
-		res = nr
+		return nr, marked
 	}
-	return res
 }
 
 // ReadEnterInput Blocks until the user enters a newline.

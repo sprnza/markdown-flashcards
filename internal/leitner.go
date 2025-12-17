@@ -22,6 +22,7 @@ type Card struct {
 	Back     string
 	Category string
 	Id       string
+	Marked   bool
 	// Box number starts at 0
 	Box uint
 	Due time.Time
@@ -69,7 +70,7 @@ func (s *Session) Start() {
 	// Start the study session.
 	for len(s.studyQueue) > 0 {
 		ScrollDownScreen()
-		card, difficulty := s.flashNextCard()
+		card, difficulty, marked := s.flashNextCard()
 
 		// If in test mode, don't update the metadata.
 		if s.TestMode {
@@ -84,7 +85,7 @@ func (s *Session) Start() {
 				testModeResults.Easy++
 			}
 		} else {
-			s.updateCard(card, difficulty)
+			s.updateCard(card, difficulty, marked)
 		}
 	}
 
@@ -176,7 +177,7 @@ func (s *Session) assembleStudyQueue() {
 
 // flashNextCard Shows a card's front side. The card is picked from the study queue.
 // Waits for the user to press a key to signal how difficult the card was to remember.
-func (s *Session) flashNextCard() (c *Card, difficulty float32) {
+func (s *Session) flashNextCard() (c *Card, difficulty float32, marked bool) {
 	ClearConsole()
 	fmt.Printf("--- Cards left for today: %d / %d", len(s.studyQueue), s.NumberCards)
 
@@ -199,8 +200,9 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	fmt.Printf("\n%s\n", back)
 
 	fmt.Println("--> How difficult was it to remember?")
+	fmt.Println("--> Press (m) to mark for later review.")
 	fmt.Printf("--> (1) Not remembered, (2) Hard, (3) Okay, (4) Easy: ")
-	d := ReadNumberInput(1, 4)
+	d, marked := ReadNumberInput(1, 4)
 	switch d {
 	case 1:
 		difficulty = NotRemembered
@@ -211,12 +213,12 @@ func (s *Session) flashNextCard() (c *Card, difficulty float32) {
 	case 4:
 		difficulty = Easy
 	}
-	return c, difficulty
+	return c, difficulty, marked
 }
 
 // updateCard Updates the card's metadata (box and due date) according to the user's input.
 // It may also add the card back to the study queue if the answer was not remembered.
-func (s *Session) updateCard(c *Card, difficulty float32) {
+func (s *Session) updateCard(c *Card, difficulty float32, marked bool) {
 	if difficulty == NotRemembered {
 		// Move the card to the first box, reset the due date to today, and add it back to the study queue.
 		c.Box = 0
@@ -235,6 +237,9 @@ func (s *Session) updateCard(c *Card, difficulty float32) {
 			daysInFuture = 1
 		}
 		c.Due = time.Date(y, m, d, 0, 0, 0, 0, time.UTC).AddDate(0, 0, daysInFuture)
+	}
+	if marked {
+		c.Marked = true
 	}
 	s.updateCardInFile(c)
 }

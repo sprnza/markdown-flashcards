@@ -163,7 +163,11 @@ func (s *Session) updateCardInFile(c *Card) {
 	check(err)
 	md := string(data)
 	re := regexp.MustCompile(fmt.Sprintf(`<!--\s*%s;\d;\d{4}-\d{2}-\d{2}\s*-->`, c.Id))
-	md = re.ReplaceAllString(md, fmt.Sprintf("<!--%s;%d;%s-->", c.Id, c.Box, c.Due.Format("2006-01-02")))
+	markString := ""
+	if c.Marked {
+		markString = ";fixme"
+	}
+	md = re.ReplaceAllString(md, fmt.Sprintf("<!--%s;%d;%s%s-->", c.Id, c.Box, c.Due.Format("2006-01-02"), markString))
 	err = os.WriteFile(s.File.Path, []byte(md), 0644)
 	check(err)
 }
@@ -193,7 +197,7 @@ func (s *Session) ChooseCategory() {
 	}
 
 	fmt.Print("Your choice: ")
-	choice := ReadNumberInput(1, len(categories))
+	choice, _ := ReadNumberInput(1, len(categories))
 	s.Category = categories[choice-1]
 }
 
